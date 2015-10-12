@@ -1,0 +1,71 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class MD2Task2 {
+	
+	public static void main(String[] args) {
+			
+		Scanner input = new Scanner(System.in);
+		
+		String forLoop = input.nextLine();
+		
+		int loopLimit = Integer.parseInt(forLoop);
+		
+		ArrayList<Integer> results = new ArrayList<Integer>();
+		
+		for(int i = 0; i < loopLimit; i++) {
+			
+			String data = input.nextLine();
+			
+			String[] data2 = data.split(" ");
+			
+			int number = Integer.parseInt(data2[0]);
+			
+			int power = Integer.parseInt(data2[1]);
+			
+			int modular = Integer.parseInt(data2[2]);
+			
+			int result = exponentialModular(number, power, modular);
+			
+			results.add(result);
+			
+		}
+		
+		for(int i = 0; i < results.size(); i++) {
+			System.out.println(results.get(i));
+		}
+		
+	}
+
+	private static int exponentialModular(int number, int power, int modular) {
+		
+		int productOfTerms = 1;
+		
+		int powerCounter = 0;
+		
+		while(power > 0) {
+			
+			if(power % 2 == 1) {
+				
+				int powerOfTwo = (int) Math.pow(2, powerCounter);
+								
+				int terms = (int) Math.pow(number, powerOfTwo);
+								
+				terms = terms % modular;
+								
+				productOfTerms = productOfTerms * terms;
+				
+				productOfTerms = productOfTerms % modular;
+				
+			}
+			
+			power = power / 2;
+			powerCounter++;
+			
+		}
+		
+		return productOfTerms;
+		
+	}
+
+}
