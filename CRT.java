@@ -14,6 +14,7 @@ public class CRT {
 			int[] arr_M = new int[eq];
 			int m = 1;
 			int x = 0;
+			//String x = "";
 			
 			for(int j = 0; j < eq; j++) {
 				String[] tmp = br.readLine().split(" ");
