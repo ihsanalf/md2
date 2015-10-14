@@ -2,55 +2,77 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
 
+/**
+ * 
+ * @author M. Hazman Ihsan A.
+ * @NPM 1406623682
+ * @ver 1.1
+ */
 public class CRT {
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		int sumCase = Integer.parseInt(br.readLine());
-		
-		for(int i = 0; i < sumCase; i++) {
+
+		/*
+		 * Looping input
+		 */
+		for (int i = 0; i < sumCase; i++) {
 			int eq = Integer.parseInt(br.readLine());
 			int[] arr_a = new int[eq];
 			int[] arr_m = new int[eq];
 			int[] arr_M = new int[eq];
 			int m = 1;
 			int x = 0;
-			//String x = "";
 			
-			for(int j = 0; j < eq; j++) {
+			/*
+			 * Looping all the equations to obtain ai and mi value
+			 */
+			for (int j = 0; j < eq; j++) {
 				String[] tmp = br.readLine().split(" ");
 				arr_a[j] = Integer.parseInt(tmp[0]);
 				arr_m[j] = Integer.parseInt(tmp[1]);
-				m *= arr_m[j];
+				m *= arr_m[j]; //while looping the m value is timed with curent mi
 			}
 			
-			for(int k = 0; k < eq; k++) {
-				arr_M[k] = m/arr_m[k];
+			/*
+			 * After the m value is obtained, we can find the Mi value
+			 */
+			for (int k = 0; k < eq; k++) {
+				arr_M[k] = m / arr_m[k];
 			}
 			
-			for(int l = 0; l < eq; l++) {
-				int tmpM = arr_M[l];
-				//System.out.println(tmpM);
-				int tmpm = arr_m[l];
-				//System.out.println(tmpm);
-				//x += " + " + arr_a[l] + "*" + arr_M[l] + "*" + inverse(tmpM, tmpm);
-				x += arr_a[l] * arr_M[l] * inverse(tmpM, tmpm);
+			/*
+			 * Calculate the x value by continously adding with ai, Mi, and inverse of Mi mod mi
+			 */
+			for (int l = 0; l < eq; l++) {
+				int tmpM = arr_M[l]; //temporary value of Mi
+				int tmpm = arr_m[l]; //temporary value of mi
+				
+				int inverse = Inverse(tmpM, tmpm);
+				x += (arr_a[l] * arr_M[l] * inverse) % m; //mod the current times value by m in case the value is too big
 			}
-			System.out.println(x);
+			System.out.println(x % m); //mod the x value by m in case the x value is too big
 		}
 	}
-	public static int inverse(int source, int target)	{
+
+	/*
+	 * Processing input & output
+	 */
+	public static int Inverse(int source, int target)	{
 		/*
 		 *Menyimpan input yang asli 
 		 */
 		int Ai = source;
 		int Mi = target;
-		
+		boolean swapped = false;
 		/*
 		 * Swap posisi jika Ai lebih kecil dari Mi
 		 */
 		if (source < target) {
+			int temp = source;
 			source = target;
-			target = Ai;
+			target = temp;
+			swapped = !swapped;
 		}
 		/*
 		 * Index 0 stores GCD 
@@ -65,15 +87,30 @@ public class CRT {
 		 * Menggunakan yang telah di swap(jika swap)
 		 */
 		result = euclidR(source, target, result);
-
-		int inverse = result[1] * result[3] + result[2];
+		
 		/*
 		 * Menggunakan yang asli
 		 */
-		if ((inverse * Ai) - (result[1] * Mi) < 0)
-			inverse = -inverse;
+		int inverse = 0;
+		
+		int temp = result[1];
+		int newY = result[1] * result[3] + result[2];
+		result[2] = temp;
+		if(swapped)	{
+			inverse = newY;
+			if ((inverse * Ai) - (result[2] * Mi) < 0)
+				inverse = -inverse;
+		}
+		else {
+			inverse = result[2];
+			if ((inverse * Ai) - (newY * Mi) < 0)	{
+				inverse = -inverse;
+			}
+		}
+		while(inverse < 0) inverse += Mi;
 		return inverse;
 	}
+
 	/**
 	 * 
 	 * @param source angka pertama
